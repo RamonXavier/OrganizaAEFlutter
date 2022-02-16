@@ -35,6 +35,28 @@ class _ListUser extends State<ListUser> {
     }
   }
 
+  void _removeSocial(int id) async {
+    try {
+      var url = Uri.parse(ApiEnviroment().userDelete + "/" + id.toString());
+
+      final response = await http.delete(url);
+
+      if (response.statusCode != 0) {
+        _getUserAndReoladPage();
+      }
+    } catch (e) {
+      throw Exception("Erro ao excluir usuário");
+    }
+  }
+
+  void _getUserAndReoladPage() {
+    var tempList = <UserDto>[];
+    _futureGetUser().then((value) => {
+          tempList = value,
+          newState(tempList),
+        });
+  }
+
   newState(List<UserDto> listUser) {
     setState(() {
       _socialList = listUser;
@@ -45,12 +67,7 @@ class _ListUser extends State<ListUser> {
   @override
   void initState() {
     super.initState();
-    var tempList = <UserDto>[];
-
-    _futureGetUser().then((value) => {
-          tempList = value,
-          newState(tempList),
-        });
+    _getUserAndReoladPage();
   }
 
   @override
@@ -67,13 +84,22 @@ class _ListUser extends State<ListUser> {
             final itemActualy = _socialList[index];
             return Padding(
               padding: const EdgeInsets.all(12.0),
-              child: Container(
-                height: 60,
-                color: Colors.deepPurple[300],
-                child: Center(
-                  child: Text(
-                    itemActualy.name ?? "",
-                    style: TextStyle(fontSize: 20, color: Colors.white),
+              child: Dismissible(
+                key: Key(itemActualy.id.toString()),
+                onDismissed: (direction) => {
+                  if (itemActualy.id != null)
+                    {
+                      _removeSocial(itemActualy.id ?? 0),
+                    }
+                },
+                child: Container(
+                  height: 60,
+                  color: Colors.deepPurple[300],
+                  child: Center(
+                    child: Text(
+                      itemActualy.name ?? "",
+                      style: TextStyle(fontSize: 20, color: Colors.white),
+                    ),
                   ),
                 ),
               ),
