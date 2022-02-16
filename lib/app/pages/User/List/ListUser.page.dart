@@ -13,7 +13,7 @@ class ListUser extends StatefulWidget {
 }
 
 class _ListUser extends State<ListUser> {
-  var _socialList = <UserDto>[];
+  var _userList = <UserDto>[];
   var _quantity = 0;
 
   Future<List<UserDto>> _futureGetUser() async {
@@ -35,7 +35,7 @@ class _ListUser extends State<ListUser> {
     }
   }
 
-  void _removeSocial(int id) async {
+  void _removeUser(int id) async {
     try {
       var url = Uri.parse(ApiEnviroment().userDelete + "/" + id.toString());
 
@@ -59,8 +59,8 @@ class _ListUser extends State<ListUser> {
 
   newState(List<UserDto> listUser) {
     setState(() {
-      _socialList = listUser;
-      _quantity = _socialList.length;
+      _userList = listUser;
+      _quantity = _userList.length;
     });
   }
 
@@ -79,17 +79,20 @@ class _ListUser extends State<ListUser> {
       ),
       body: SafeArea(
         child: ListView.builder(
-          itemCount: _socialList.length,
+          itemCount: _userList.length,
           itemBuilder: (BuildContext context, int index) {
-            final itemActualy = _socialList[index];
+            final itemActualy = _userList[index];
             return Padding(
               padding: const EdgeInsets.all(12.0),
               child: Dismissible(
                 key: Key(itemActualy.id.toString()),
+                background: Container(
+                  color: Colors.redAccent.withOpacity(0.9),
+                ),
                 onDismissed: (direction) => {
                   if (itemActualy.id != null)
                     {
-                      _removeSocial(itemActualy.id ?? 0),
+                      _removeUser(itemActualy.id ?? 0),
                     }
                 },
                 child: Container(

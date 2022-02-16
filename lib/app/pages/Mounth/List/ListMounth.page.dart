@@ -35,9 +35,31 @@ class _ListMounth extends State<ListMounth> {
     }
   }
 
-  newState(List<MounthDto> listMounth) {
+  void _removeMounth(int id) async {
+    try {
+      var url = Uri.parse(ApiEnviroment().mounthDelete + "/" + id.toString());
+
+      final response = await http.delete(url);
+
+      if (response.statusCode != 0) {
+        _getMounthAndReoladPage();
+      }
+    } catch (e) {
+      throw Exception("Erro ao excluir mês");
+    }
+  }
+
+  void _getMounthAndReoladPage() {
+    var tempList = <MounthDto>[];
+    _futureGetMounth().then((value) => {
+          tempList = value,
+          newState(tempList),
+        });
+  }
+
+  newState(List<MounthDto> listUser) {
     setState(() {
-      _mounthList = listMounth;
+      _mounthList = listUser;
       _quantity = _mounthList.length;
     });
   }
@@ -45,12 +67,7 @@ class _ListMounth extends State<ListMounth> {
   @override
   void initState() {
     super.initState();
-    var listaTemporaria = <MounthDto>[];
-
-    _futureGetMounth().then((value) => {
-          listaTemporaria = value,
-          newState(listaTemporaria),
-        });
+    _getMounthAndReoladPage();
   }
 
   @override
@@ -67,13 +84,25 @@ class _ListMounth extends State<ListMounth> {
             final itemActualy = _mounthList[index];
             return Padding(
               padding: const EdgeInsets.all(12.0),
-              child: Container(
-                height: 60,
-                color: Colors.deepPurple[300],
-                child: Center(
-                  child: Text(
-                    itemActualy.name ?? "",
-                    style: TextStyle(fontSize: 20, color: Colors.white),
+              child: Dismissible(
+                key: Key(itemActualy.id.toString()),
+                background: Container(
+                  color: Colors.redAccent.withOpacity(0.9),
+                ),
+                onDismissed: (direction) => {
+                  if (itemActualy.id != null)
+                    {
+                      _removeMounth(itemActualy.id ?? 0),
+                    }
+                },
+                child: Container(
+                  height: 60,
+                  color: Colors.deepPurple[300],
+                  child: Center(
+                    child: Text(
+                      itemActualy.name ?? "",
+                      style: TextStyle(fontSize: 20, color: Colors.white),
+                    ),
                   ),
                 ),
               ),
