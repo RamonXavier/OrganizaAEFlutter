@@ -42,15 +42,32 @@ class _ListSocial extends State<ListSocial> {
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-    var tempList = <SocialDto>[];
+  void _removeSocial(int id) async {
+    try {
+      var url = Uri.parse(ApiEnviroment().socialDelete + "/" + id.toString());
 
+      final response = await http.delete(url);
+
+      if (response.statusCode != 0) {
+        _getSocialAndReoladPage();
+      }
+    } catch (e) {
+      throw Exception("Erro ao excluir social");
+    }
+  }
+
+  void _getSocialAndReoladPage() {
+    var tempList = <SocialDto>[];
     _futureGetSocial().then((value) => {
           tempList = value,
           newState(tempList),
         });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getSocialAndReoladPage();
   }
 
   @override
@@ -67,13 +84,24 @@ class _ListSocial extends State<ListSocial> {
             final itemActualy = _socialList[index];
             return Padding(
               padding: const EdgeInsets.all(12.0),
-              child: Container(
-                height: 60,
-                color: Colors.deepPurple[300],
-                child: Center(
-                  child: Text(
-                    itemActualy.name ?? "",
-                    style: TextStyle(fontSize: 20, color: Colors.white),
+              child: Dismissible(
+                key: Key(itemActualy.id.toString()),
+                background: Container(
+                  color: Colors.redAccent.withOpacity(0.9),
+                ),
+                onDismissed: (direction) {
+                  if (itemActualy.id != null) {
+                    _removeSocial(itemActualy.id ?? 0);
+                  }
+                },
+                child: Container(
+                  height: 60,
+                  color: Colors.deepPurple[300],
+                  child: Center(
+                    child: Text(
+                      itemActualy.name ?? "",
+                      style: TextStyle(fontSize: 20, color: Colors.white),
+                    ),
                   ),
                 ),
               ),

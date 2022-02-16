@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:organiza_ae/app/pages/Payment/List/ListPayment.page.dart';
+import 'app/pages/Social/List/ListSocial.page.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -24,8 +24,8 @@ class HomePage extends StatelessWidget {
       ),
       //home: ListMounth(),
       // home: ListUser(),
-      // home: ListSocial(),
-      home: ListPayment(),
+      home: ListSocial(),
+      //home: ListPayment(),
     );
   }
 }
