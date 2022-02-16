@@ -36,9 +36,31 @@ class _ListPayment extends State<ListPayment> {
     }
   }
 
-  newState(List<PaymentListDto> listPayment) {
+  void _removePayment(int id) async {
+    try {
+      var url = Uri.parse(ApiEnviroment().paymentDelete + "/" + id.toString());
+
+      final response = await http.delete(url);
+
+      if (response.statusCode != 0) {
+        _getMounthAndReoladPage();
+      }
+    } catch (e) {
+      throw Exception("Erro ao excluir mês");
+    }
+  }
+
+  void _getMounthAndReoladPage() {
+    var tempList = <PaymentListDto>[];
+    _futureGetPayment().then((value) => {
+          tempList = value,
+          newState(tempList),
+        });
+  }
+
+  newState(List<PaymentListDto> listUser) {
     setState(() {
-      _paymentList = listPayment;
+      _paymentList = listUser;
       _quantity = _paymentList.length;
     });
   }
@@ -46,12 +68,7 @@ class _ListPayment extends State<ListPayment> {
   @override
   void initState() {
     super.initState();
-    var tempList = <PaymentListDto>[];
-
-    _futureGetPayment().then((value) => {
-          tempList = value,
-          newState(tempList),
-        });
+    _getMounthAndReoladPage();
   }
 
   @override
@@ -69,52 +86,64 @@ class _ListPayment extends State<ListPayment> {
             final statusActualy = itemActualy.status ?? 4;
             return Padding(
               padding: const EdgeInsets.all(12.0),
-              child: Container(
-                height: 80,
-                color: Colors.deepPurple[300],
-                child: ListView(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          itemActualy.nameUser ?? "",
-                          style: TextStyle(fontSize: 20, color: Colors.white),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          itemActualy.nameMounth ?? "",
-                          style: TextStyle(fontSize: 13, color: Colors.white),
-                        ),
-                        Text(
-                          " " + itemActualy.year.toString(),
-                          style: TextStyle(fontSize: 13, color: Colors.white),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          itemActualy.nameSocial ?? "",
-                          style: TextStyle(fontSize: 13, color: Colors.white),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          StatusPayment().status[statusActualy - 1],
-                          style: TextStyle(fontSize: 13, color: Colors.white),
-                        ),
-                      ],
-                    ),
-                  ],
+              child: Dismissible(
+                key: Key(itemActualy.id.toString()),
+                background: Container(
+                  color: Colors.redAccent.withOpacity(0.9),
+                ),
+                onDismissed: (direction) => {
+                  if (itemActualy.id != null)
+                    {
+                      _removePayment(itemActualy.id ?? 0),
+                    }
+                },
+                child: Container(
+                  height: 80,
+                  color: Colors.deepPurple[300],
+                  child: ListView(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            itemActualy.nameUser ?? "",
+                            style: TextStyle(fontSize: 20, color: Colors.white),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            itemActualy.nameMounth ?? "",
+                            style: TextStyle(fontSize: 13, color: Colors.white),
+                          ),
+                          Text(
+                            " " + itemActualy.year.toString(),
+                            style: TextStyle(fontSize: 13, color: Colors.white),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            itemActualy.nameSocial ?? "",
+                            style: TextStyle(fontSize: 13, color: Colors.white),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            StatusPayment().status[statusActualy - 1],
+                            style: TextStyle(fontSize: 13, color: Colors.white),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             );
