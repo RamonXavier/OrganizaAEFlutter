@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'app/pages/MenuDefaultAdmin/MenuDefaultAdmin.page.dart';
 import 'app/pages/Mounth/List/ListMounth.page.dart';
 import 'app/pages/Payment/List/ListPayment.page.dart';
 import 'app/pages/Social/List/ListSocial.page.dart';
@@ -28,7 +29,8 @@ class HomePage extends StatelessWidget {
       //home: ListMounth(),
       //home: ListUser(),
       //home: ListSocial(),
-      home: ListPayment(),
+      //home: ListPayment(),
+      home: MenuDefaultAdmin(),
     );
   }
 }
