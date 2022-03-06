@@ -2,10 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'app/pages/MenuDefaultAdmin/MenuDefaultAdmin.page.dart';
-import 'app/pages/Mounth/List/ListMounth.page.dart';
-import 'app/pages/Payment/List/ListPayment.page.dart';
-import 'app/pages/Social/List/ListSocial.page.dart';
-import 'app/pages/User/List/ListUser.page.dart';
+// import 'app/pages/Mounth/List/ListMounth.page.dart';
+// import 'app/pages/Payment/List/ListPayment.page.dart';
+// import 'app/pages/Social/List/ListSocial.page.dart';
+// import 'app/pages/User/List/ListUser.page.dart';
 
 void main() {
   runApp(MaterialApp(
