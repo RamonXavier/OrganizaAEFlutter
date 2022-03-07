@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:organiza_ae/app/pages/Mounth/List/ListMounth.page.dart';
 import 'package:organiza_ae/app/pages/Payment/List/ListPayment.page.dart';
 import 'package:organiza_ae/app/pages/Social/List/ListSocial.page.dart';
+import 'package:organiza_ae/app/pages/User/Edit/EditUser.page.dart';
 import 'package:organiza_ae/app/pages/User/List/ListUser.page.dart';
 
 class MenuDefaultAdmin extends StatelessWidget {
@@ -179,7 +180,7 @@ class MenuDefaultAdmin extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const ListUser()),
+                                  builder: (context) => const EditUser()),
                             );
                           },
                           child: Text(
