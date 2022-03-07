@@ -77,39 +77,37 @@ class _ListUser extends State<ListUser> {
         title: Text("Listagem de usuários: $_quantity"),
         backgroundColor: Colors.deepPurpleAccent,
       ),
-      body: SingleChildScrollView(
-        child: SafeArea(
-          child: ListView.builder(
-            itemCount: _userList.length,
-            itemBuilder: (BuildContext context, int index) {
-              final itemActualy = _userList[index];
-              return Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Dismissible(
-                  key: Key(itemActualy.id.toString()),
-                  background: Container(
-                    color: Colors.redAccent.withOpacity(0.9),
-                  ),
-                  onDismissed: (direction) => {
-                    if (itemActualy.id != null)
-                      {
-                        _removeUser(itemActualy.id ?? 0),
-                      }
-                  },
-                  child: Container(
-                    height: 60,
-                    color: Colors.deepPurple[300],
-                    child: Center(
-                      child: Text(
-                        itemActualy.name ?? "",
-                        style: TextStyle(fontSize: 20, color: Colors.white),
-                      ),
+      body: SafeArea(
+        child: ListView.builder(
+          itemCount: _userList.length,
+          itemBuilder: (BuildContext context, int index) {
+            final itemActualy = _userList[index];
+            return Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Dismissible(
+                key: Key(itemActualy.id.toString()),
+                background: Container(
+                  color: Colors.redAccent.withOpacity(0.9),
+                ),
+                onDismissed: (direction) => {
+                  if (itemActualy.id != null)
+                    {
+                      _removeUser(itemActualy.id ?? 0),
+                    }
+                },
+                child: Container(
+                  height: 60,
+                  color: Colors.deepPurple[300],
+                  child: Center(
+                    child: Text(
+                      itemActualy.name ?? "",
+                      style: TextStyle(fontSize: 20, color: Colors.white),
                     ),
                   ),
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
       ),
     );

@@ -1,6 +1,9 @@
 // ignore_for_file: prefer_const_constructors
-
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:organiza_ae/app/Helpers/api.helper.dart';
+import 'package:organiza_ae/models/User/User.dto.dart';
+import 'package:http/http.dart' as http;
 
 class EditUser extends StatefulWidget {
   const EditUser({Key? key}) : super(key: key);
@@ -12,6 +15,9 @@ class EditUser extends StatefulWidget {
 class _EditUserState extends State<EditUser> {
   final _formKey = GlobalKey<FormState>();
   bool _hidePassword = true;
+  final UserDto _userSubmit = UserDto();
+
+  TextEditingController emailController = TextEditingController();
 
   void notificationSubmissionForm() {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -26,6 +32,27 @@ class _EditUserState extends State<EditUser> {
     setState(() {
       _hidePassword = !_hidePassword;
     });
+  }
+
+  Future<void> submit() async {
+    _formKey.currentState!.save();
+    _userSubmit.id = 0;
+
+    try {
+      var url = Uri.parse(ApiEnviroment().userCreate);
+
+      final response = await http.post(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(_userSubmit),
+      );
+
+      if (response.statusCode != 0) {}
+    } catch (e) {
+      throw Exception("Erro ao salvar dados");
+    }
   }
 
   @override
@@ -48,6 +75,9 @@ class _EditUserState extends State<EditUser> {
                     SizedBox(
                       width: 250,
                       child: TextFormField(
+                        onSaved: (String? value) {
+                          _userSubmit.name = value;
+                        },
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -76,6 +106,9 @@ class _EditUserState extends State<EditUser> {
                     SizedBox(
                       width: 250,
                       child: TextFormField(
+                        onSaved: (String? value) {
+                          _userSubmit.email = value;
+                        },
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -104,6 +137,9 @@ class _EditUserState extends State<EditUser> {
                       width: 250,
                       child: TextFormField(
                         obscureText: _hidePassword,
+                        onSaved: (String? value) {
+                          _userSubmit.password = value;
+                        },
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -147,6 +183,7 @@ class _EditUserState extends State<EditUser> {
                           // Validate returns true if the form is valid, or false otherwise.
                           if (_formKey.currentState!.validate()) {
                             notificationSubmissionForm();
+                            submit();
                           }
                         },
                         child: const Text('Salvar'),
