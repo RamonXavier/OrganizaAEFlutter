@@ -4,23 +4,21 @@ import 'dart:convert';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:organiza_ae/app/Helpers/api.helper.dart';
-import 'package:organiza_ae/models/User/User.dto.dart';
+import 'package:organiza_ae/models/Mounth/Mounth.dto.dart';
 import 'package:http/http.dart' as http;
 
-class EditUser extends StatefulWidget {
-  const EditUser({Key? key}) : super(key: key);
+class EditMounth extends StatefulWidget {
+  const EditMounth({Key? key}) : super(key: key);
 
   @override
-  State<EditUser> createState() => _EditUserState();
+  State<EditMounth> createState() => _EditMounthState();
 }
 
-class _EditUserState extends State<EditUser> with TickerProviderStateMixin {
+class _EditMounthState extends State<EditMounth> with TickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
-  bool _hidePassword = true;
   bool _saving = false;
-  final UserDto _userSubmit = UserDto();
+  final MounthDto _mounthSubmit = MounthDto();
   late AnimationController _controller;
-  TextEditingController emailController = TextEditingController();
 
   @override
   void initState() {
@@ -55,12 +53,6 @@ class _EditUserState extends State<EditUser> with TickerProviderStateMixin {
     );
   }
 
-  void changeIconPassword() {
-    setState(() {
-      _hidePassword = !_hidePassword;
-    });
-  }
-
   void setSaving() {
     setState(() {
       _saving = !_saving;
@@ -68,17 +60,17 @@ class _EditUserState extends State<EditUser> with TickerProviderStateMixin {
   }
 
   Future<void> submit() async {
-    _formKey.currentState!.save();
-    _userSubmit.id = 0;
     try {
-      var url = Uri.parse(ApiEnviroment().userCreate);
+      _formKey.currentState!.save();
+      _mounthSubmit.id = 0;
+      var url = Uri.parse(ApiEnviroment().mounthCreate);
 
       final response = await http.post(
         url,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: jsonEncode(_userSubmit),
+        body: jsonEncode(_mounthSubmit),
       );
 
       if (response.statusCode != 0) {
@@ -86,7 +78,7 @@ class _EditUserState extends State<EditUser> with TickerProviderStateMixin {
         _formKey.currentState!.reset();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Novo usuário salvo com sucesso.'),
+            content: Text('Novo mês salvo com sucesso.'),
             duration: Duration(seconds: 1),
           ),
         );
@@ -100,7 +92,7 @@ class _EditUserState extends State<EditUser> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Novo usuário: "),
+        title: Text("Novo mês: "),
         backgroundColor: Colors.deepPurpleAccent,
       ),
       body: SingleChildScrollView(
@@ -117,7 +109,7 @@ class _EditUserState extends State<EditUser> with TickerProviderStateMixin {
                       width: 250,
                       child: TextFormField(
                         onSaved: (String? value) {
-                          _userSubmit.name = value;
+                          _mounthSubmit.name = value;
                         },
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(
@@ -125,18 +117,17 @@ class _EditUserState extends State<EditUser> with TickerProviderStateMixin {
                           ),
                           prefixIcon: IconButton(
                             onPressed: null,
-                            icon: Icon(Icons.person),
+                            icon: Icon(Icons.calendar_today),
                           ),
-                          hintText: 'Nome de usuário',
+                          hintText: 'Nome do mês',
                         ),
-                        // The validator receives the text that the user has entered.
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Preencha o nome do usuário';
+                            return 'Preencha o nome do mês';
                           }
 
-                          if (value.length <= 5) {
-                            return 'O nome de usuário deve ser maior \nque 5 caracteres \n';
+                          if (value.length <= 3) {
+                            return 'O nome de mês deve ser maior \nque 3 caracteres \n';
                           }
 
                           return null;
@@ -147,8 +138,9 @@ class _EditUserState extends State<EditUser> with TickerProviderStateMixin {
                     SizedBox(
                       width: 250,
                       child: TextFormField(
+                        keyboardType: TextInputType.number,
                         onSaved: (String? value) {
-                          _userSubmit.email = value;
+                          _mounthSubmit.number = int.parse(value!);
                         },
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(
@@ -156,63 +148,25 @@ class _EditUserState extends State<EditUser> with TickerProviderStateMixin {
                           ),
                           prefixIcon: IconButton(
                             onPressed: null,
-                            icon: Icon(Icons.mail),
+                            icon: Icon(Icons.format_list_numbered),
                           ),
-                          hintText: 'Email',
+                          hintText: 'Ano do mês',
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Preencha o email';
+                            return 'Preencha o ano do mês';
                           }
 
-                          if (value.length <= 5 || !value.contains('@')) {
-                            return 'Preencha um email válido';
+                          if (int.parse(value) < DateTime.now().year) {
+                            return 'Preencha um ano maior ou igual a ' +
+                                DateTime.now().year.toString();
                           }
 
                           return null;
                         },
                       ),
                     ),
-                    SizedBox(height: 30),
-                    SizedBox(
-                      width: 250,
-                      child: TextFormField(
-                        obscureText: _hidePassword,
-                        onSaved: (String? value) {
-                          _userSubmit.password = value;
-                        },
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ),
-                          prefixIcon: IconButton(
-                            onPressed: null,
-                            icon: Icon(Icons.password),
-                          ),
-                          suffixIcon: IconButton(
-                            icon: _hidePassword
-                                ? Icon(Icons.visibility_off)
-                                : Icon(Icons.visibility),
-                            onPressed: () {
-                              changeIconPassword();
-                            },
-                          ),
-                          hintText: 'Senha',
-                        ),
-                        // The validator receives the text that the user has entered.
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Preencha sua senha';
-                          }
-
-                          if (value.length <= 4) {
-                            return 'A senha deve conter no mínimo \n 4 caracteres';
-                          }
-
-                          return null;
-                        },
-                      ),
-                    ),
+                    SizedBox(height: 10),
                     SizedBox(
                       width: 350,
                       height: 150,

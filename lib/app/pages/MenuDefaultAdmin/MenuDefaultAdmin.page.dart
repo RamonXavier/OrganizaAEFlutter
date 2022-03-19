@@ -1,7 +1,9 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:flutter/material.dart';
+import 'package:organiza_ae/app/pages/Mounth/Edit/EditMounth.page.dart';
 import 'package:organiza_ae/app/pages/Mounth/List/ListMounth.page.dart';
 import 'package:organiza_ae/app/pages/Payment/List/ListPayment.page.dart';
+import 'package:organiza_ae/app/pages/Social/Edit/EditSocial.page.dart';
 import 'package:organiza_ae/app/pages/Social/List/ListSocial.page.dart';
 import 'package:organiza_ae/app/pages/User/Edit/EditUser.page.dart';
 import 'package:organiza_ae/app/pages/User/List/ListUser.page.dart';
@@ -236,7 +238,7 @@ class MenuDefaultAdmin extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const ListMounth()),
+                                  builder: (context) => const EditMounth()),
                             );
                           },
                           child: Text(
@@ -262,7 +264,7 @@ class MenuDefaultAdmin extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const ListSocial()),
+                                  builder: (context) => const EditSocial()),
                             );
                           },
                           child: Text(
